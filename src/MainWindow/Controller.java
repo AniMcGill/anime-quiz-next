@@ -1,7 +1,5 @@
 package MainWindow;
 
-import Data.Category;
-import Data.CategoryType;
 import Data.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,12 +24,14 @@ public class Controller {
                 new FileChooser.ExtensionFilter("Anime Quiz", "*.s3db")
         );
         File file = fileChooser.showSaveDialog(Main.getStage());
-        // delete existing file
-        file.delete();
-        Main.setFile(file);
+        if(file != null) {
+            // delete existing file
+            file.delete();
+            Main.setFile(file);
 
-        createDatabase(Main.getFile());
-        loadFile(Main.getFile());
+            createDatabase(Main.getFile());
+            loadFile(Main.getFile());
+        }
     }
 
     @FXML
@@ -80,7 +80,9 @@ public class Controller {
      */
     private void createDatabase(File file){
         try {
-            Statement statement = Main.getConnection().createStatement();
+            Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+            connection.setAutoCommit(true);
+            Statement statement = connection.createStatement();
             // Teams
             String sql = "CREATE TABLE Teams (" +
                     "team_id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -104,12 +106,13 @@ public class Controller {
                     "set_completed BOOLEAN DEFAULT 'false' NOT NULL)";
             statement.execute(sql);
             // Categories
+            /*
             sql = "CREATE TABLE Categories (" +
                     "cat_id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT," +
                     "cat_type INTEGER  NOT NULL," +
                     "set_id INTEGER  NOT NULL," +
                     "FOREIGN KEY (set_id) REFERENCES Sets(set_id))";
-            statement.execute(sql);
+            statement.execute(sql);*/
             // Questions
             sql = "CREATE TABLE Questions (" +
                     "question_id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -118,13 +121,14 @@ public class Controller {
                     "question_timing INTEGER  NOT NULL," +
                     "question_points INTEGER  NOT NULL," +
                     "question_answered BOOLEAN DEFAULT 'false' NOT NULL," +
-                    "cat_id INTEGER  NOT NULL," +
-                    "FOREIGN KEY (cat_id) REFERENCES Categories(cat_id))";
+                    "question_cat INTEGER  NOT NULL," +
+                    "set_id INTEGER  NOT NULL," +
+                    "FOREIGN KEY (set_id) REFERENCES Sets(set_id))";
             statement.execute(sql);
 
             // Close
             statement.close();
-            //connection.close(); //never closing the connection, what could go wrong?
+            connection.close();
         } catch (Exception e) {
             Dialogs.create()
                     .owner( Main.getStage())
@@ -140,23 +144,29 @@ public class Controller {
      * @param file the database filename
      */
     private void loadFile(File file){
-        //TODO
+        getSets();
+        // TODO: bind Set to setComboBox
+        setButtonBar.setVisible(true);
+        editModeToggleButton.setSelected(Main.isEditMode());
+    }
+
+    /**
+     * Get the Sets.
+     */
+    private void getSets(){
         try {
-            Statement statement = Main.getConnection().createStatement();
+            Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+            Statement statement = connection.createStatement();
             String setQuery = "SELECT * FROM Sets";
             ResultSet setResults = statement.executeQuery(setQuery);
 
             while(setResults.next()){
                 Set newSet = new Set(setResults.getInt("set_id"), setResults.getNString("set_name"), setResults.getBoolean("set_completed"));
-                String categoryQuery = "SELECT * FROM Categories WHERE set_id = " + setResults.getInt("set_id");
-                ResultSet categoryResults = statement.executeQuery(categoryQuery);
-                while(categoryResults.next()) {
-                    Category newCategory = new Category(categoryResults.getInt("cat_id"),CategoryType.values()[categoryResults.getInt("cat_type")]);
-                    newSet.getCategoryList().add(newCategory);  //TODO: check if this is safe
-                    // TODO: get questions........
-                }
-                Main.getSetList().add(newSet);  //TODO: check if this is safe
+
+                Main.getSetList().add(newSet);  //TODO: does not get added
             }
+            statement.close();
+            connection.close();
         } catch (Exception e) {
             Dialogs.create()
                     .owner(Main.getStage())
@@ -165,7 +175,5 @@ public class Controller {
                     .message(e.getLocalizedMessage())
                     .showException(e);
         }
-        setButtonBar.setVisible(true);
-        editModeToggleButton.setSelected(Main.isEditMode());
     }
 }

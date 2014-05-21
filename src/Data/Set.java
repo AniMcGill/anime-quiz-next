@@ -10,19 +10,15 @@ public class Set {
     private int setId;
     private String setName;
     private boolean setCompleted;
-    private ArrayList<Category> categoryList = new ArrayList<Category>();
+    private ArrayList<QuestionItem> questionList = new ArrayList<QuestionItem>();
+    private ArrayList<QuestionItem> screenshotList = new ArrayList<QuestionItem>();
+    private ArrayList<QuestionItem> musicList = new ArrayList<QuestionItem>();
 
     public Set(int setId, String setName, boolean setCompleted) {
         this.setId = setId;
         this.setName = setName;
         this.setCompleted = setCompleted;
     }
-
-    /*
-    public Set(String setName) {
-        this.setName = setName;
-        this.setCompleted = false;
-    } */
 
     public int getSetId() {
         return setId;
@@ -48,11 +44,27 @@ public class Set {
         this.setCompleted = setCompleted;
     }
 
-    public List<Category> getCategoryList() {
-        return categoryList;
+    public ArrayList<QuestionItem> getQuestionList() {
+        return questionList;
     }
 
-    public void setCategoryList(ArrayList<Category> categoryList) {
-        this.categoryList = categoryList;
+    public void setQuestionList(ArrayList<QuestionItem> questionList) {
+        this.questionList = questionList;
+    }
+
+    public ArrayList<QuestionItem> getScreenshotList() {
+        return screenshotList;
+    }
+
+    public void setScreenshotList(ArrayList<QuestionItem> screenshotList) {
+        this.screenshotList = screenshotList;
+    }
+
+    public ArrayList<QuestionItem> getMusicList() {
+        return musicList;
+    }
+
+    public void setMusicList(ArrayList<QuestionItem> musicList) {
+        this.musicList = musicList;
     }
 }

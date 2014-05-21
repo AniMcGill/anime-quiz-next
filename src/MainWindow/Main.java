@@ -20,7 +20,6 @@ public class Main extends Application {
     private static File file;
 
     private static String dbConnectionString;
-    private static Connection connection;
 
     private static ArrayList<Set> setList = new ArrayList<Set>();
 
@@ -44,16 +43,6 @@ public class Main extends Application {
     public static void setFile(File file) {
         Main.file = file;
         setDbConnectionString();
-        try {
-            setConnection();
-        } catch (SQLException e) {
-            Dialogs.create()
-                    .owner(stage)
-                    .title("Fail")
-                    .masthead("An exception has occurred creating the database connection.")
-                    .message(e.getLocalizedMessage())
-                    .showException(e);
-        }
     }
 
     public static String getDbConnectionString(){
@@ -63,14 +52,6 @@ public class Main extends Application {
         if (file != null){
             dbConnectionString = "jdbc:sqlite:" + file.getAbsolutePath();
         }
-    }
-
-    public static Connection getConnection() {
-        return connection;
-    }
-    public static void setConnection() throws SQLException{
-        connection = DriverManager.getConnection(dbConnectionString);
-        connection.setAutoCommit(true);
     }
 
     public static ArrayList<Set> getSetList() {
