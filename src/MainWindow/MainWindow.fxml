@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity"
+      maxWidth="-Infinity"
+      minHeight="-Infinity"
+      minWidth="-Infinity"
+      prefHeight="400.0"
+      prefWidth="600.0"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="MainWindow.Controller">
+   <children>
+      <MenuBar fx:id="menuBar">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="createGameMenu" mnemonicParsing="false" onAction="#createGameDialog" text="Create Game">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+              </MenuItem>
+              <MenuItem fx:id="loadGameMenu" mnemonicParsing="false" onAction="#loadGameDialog" text="Load Game">
+                 <accelerator>
+                    <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                 </accelerator>
+              </MenuItem>
+              <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="exitMenu" onAction="#exitGame" mnemonicParsing="false" text="Exit" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Team">
+            <items>
+              <MenuItem fx:id="teamSetupMenu" mnemonicParsing="false" text="Setup" />
+              <MenuItem fx:id="teamManageMenu" mnemonicParsing="false" text="Manage" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="View">
+              <items>
+                <MenuItem mnemonicParsing="false" />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <BorderPane prefHeight="29.0" prefWidth="595.0">
+         <VBox.margin>
+            <Insets left="5.0" top="5.0" />
+         </VBox.margin>
+         <top>
+            <HBox fx:id="setButtonBar" prefHeight="35.0" prefWidth="595.0" visible="false" BorderPane.alignment="CENTER">
+               <children>
+                  <ComboBox fx:id="setComboBox" onAction="#setComboBox_SelectionChanged" prefWidth="150.0" promptText="Choose Set...">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Button fx:id="setAddButton" mnemonicParsing="false" onAction="#setAddButton_Click" text="+">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="setRemoveButton" mnemonicParsing="false" text="-" visible="false">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="setRenameButton" mnemonicParsing="false" text="Rename" visible="false">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ToggleButton fx:id="editModeToggleButton" mnemonicParsing="false" onAction="#editModeToggle_Toggled" text="Edit mode" />
+               </children>
+            </HBox>
+         </top>
+      </BorderPane>
+   </children>
+</VBox>
