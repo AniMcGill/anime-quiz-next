@@ -10,9 +10,9 @@ public class Set {
     private int setId;
     private String setName;
     private boolean setCompleted;
-    private ArrayList<QuestionItem> questionList = new ArrayList<QuestionItem>();
-    private ArrayList<QuestionItem> screenshotList = new ArrayList<QuestionItem>();
-    private ArrayList<QuestionItem> musicList = new ArrayList<QuestionItem>();
+    private ArrayList<Question> questionList = new ArrayList<Question>();
+    private ArrayList<Screenshot> screenshotList = new ArrayList<Screenshot>();
+    private ArrayList<Music> musicList = new ArrayList<Music>();
 
     public Set(int setId, String setName, boolean setCompleted) {
         this.setId = setId;
@@ -44,27 +44,32 @@ public class Set {
         this.setCompleted = setCompleted;
     }
 
-    public ArrayList<QuestionItem> getQuestionList() {
+    public ArrayList<Question> getQuestionList() {
         return questionList;
     }
 
-    public void setQuestionList(ArrayList<QuestionItem> questionList) {
+    public void setQuestionList(ArrayList<Question> questionList) {
         this.questionList = questionList;
     }
 
-    public ArrayList<QuestionItem> getScreenshotList() {
+    public ArrayList<Screenshot> getScreenshotList() {
         return screenshotList;
     }
 
-    public void setScreenshotList(ArrayList<QuestionItem> screenshotList) {
+    public void setScreenshotList(ArrayList<Screenshot> screenshotList) {
         this.screenshotList = screenshotList;
     }
 
-    public ArrayList<QuestionItem> getMusicList() {
+    public ArrayList<Music> getMusicList() {
         return musicList;
     }
 
-    public void setMusicList(ArrayList<QuestionItem> musicList) {
+    public void setMusicList(ArrayList<Music> musicList) {
         this.musicList = musicList;
+    }
+
+    @Override
+    public String toString() {
+        return setName;
     }
 }

@@ -21,7 +21,7 @@ public class Main extends Application {
 
     private static String dbConnectionString;
 
-    private static ArrayList<Set> setList = new ArrayList<Set>();
+    protected static ArrayList<Set> setList = new ArrayList<>();
 
     private static boolean editMode = true;
     @Override

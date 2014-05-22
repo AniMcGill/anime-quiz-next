@@ -3,7 +3,7 @@ package MainWindow;
 import Data.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -11,10 +11,11 @@ import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class Controller {
-    @FXML private MenuBar menuBar;
     @FXML private HBox setButtonBar;
+    @FXML private ComboBox setComboBox;
 
     @FXML
     private void createGameDialog(){
@@ -54,6 +55,10 @@ public class Controller {
         Platform.exit();
     }
 
+    /**
+     * Load a Set when selected from the setComboBox
+     * and display additional UI elements.
+     */
     @FXML
     private void setComboBox_SelectionChanged(){
         //TODO event handler
@@ -66,7 +71,7 @@ public class Controller {
                 .title("Add Set")
                 .message("Enter Set name")
                 .showTextInput();
-        // TODO: add set and set as current set
+        // TODO: add set and set as current set (U3)
     }
     @FXML private ToggleButton editModeToggleButton;
     @FXML
@@ -105,14 +110,6 @@ public class Controller {
                     "set_name NVARCHAR(20)  NOT NULL," +
                     "set_completed BOOLEAN DEFAULT 'false' NOT NULL)";
             statement.execute(sql);
-            // Categories
-            /*
-            sql = "CREATE TABLE Categories (" +
-                    "cat_id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                    "cat_type INTEGER  NOT NULL," +
-                    "set_id INTEGER  NOT NULL," +
-                    "FOREIGN KEY (set_id) REFERENCES Sets(set_id))";
-            statement.execute(sql);*/
             // Questions
             sql = "CREATE TABLE Questions (" +
                     "question_id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -144,16 +141,23 @@ public class Controller {
      * @param file the database filename
      */
     private void loadFile(File file){
-        getSets();
-        // TODO: bind Set to setComboBox
-        setButtonBar.setVisible(true);
-        editModeToggleButton.setSelected(Main.isEditMode());
+        if(getSets()) {
+            // add sets to combobox for now
+            //TODO: bind instead
+            setComboBox.getItems().addAll(Main.getSetList().stream()
+                                                        .map(s -> s.getSetName())
+                                                        .collect(Collectors.toList()));
+            //setComboBox.itemsProperty().bind();
+            // show UI
+            setButtonBar.setVisible(true);
+            editModeToggleButton.setSelected(Main.isEditMode());
+        }
     }
 
     /**
      * Get the Sets.
      */
-    private void getSets(){
+    private boolean getSets(){
         try {
             Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
             Statement statement = connection.createStatement();
@@ -161,12 +165,13 @@ public class Controller {
             ResultSet setResults = statement.executeQuery(setQuery);
 
             while(setResults.next()){
-                Set newSet = new Set(setResults.getInt("set_id"), setResults.getNString("set_name"), setResults.getBoolean("set_completed"));
+                Set newSet = new Set(setResults.getInt("set_id"), setResults.getString("set_name"), setResults.getBoolean("set_completed"));
 
-                Main.getSetList().add(newSet);  //TODO: does not get added
+                Main.setList.add(newSet);
             }
             statement.close();
             connection.close();
+            return true;
         } catch (Exception e) {
             Dialogs.create()
                     .owner(Main.getStage())
@@ -174,6 +179,7 @@ public class Controller {
                     .masthead("An exception has occurred loading the file.")
                     .message(e.getLocalizedMessage())
                     .showException(e);
+            return false;
         }
     }
 }
