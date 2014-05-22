@@ -62,11 +62,11 @@
   <!-- Project Libraries -->
   
   <path id="library.controlsfx-8.0.5.classpath">
-    <pathelement location="${basedir}/controlsfx-8.0.5.jar"/>
+    <pathelement location="/lib/controlsfx-8.0.5.jar"/>
   </path>
   
   <path id="library.sqlite-jdbc4-3.8.2-snapshot.classpath">
-    <pathelement location="${basedir}/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
+    <pathelement location="/lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
   </path>
   
   <!-- Modules -->
