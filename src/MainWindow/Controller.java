@@ -2,15 +2,21 @@ package MainWindow;
 
 import Data.Set;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;
 import java.sql.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -71,8 +77,14 @@ public class Controller {
                 .title("Add Set")
                 .message("Enter Set name")
                 .showTextInput();
-        // TODO: add set and set as current set (U3)
+        Set addedSet = addSet(setName);
+        if(addedSet != null){
+            Main.setList.add(addedSet);
+            updateSetComboBox();    // in absence of data binding
+            //TODO: update current set to the added one
+        }
     }
+
     @FXML private ToggleButton editModeToggleButton;
     @FXML
     private void editModeToggle_Toggled(){
@@ -143,15 +155,45 @@ public class Controller {
     private void loadFile(File file){
         if(getSets()) {
             // add sets to combobox for now
+            updateSetComboBox();
             //TODO: bind instead
-            setComboBox.getItems().addAll(Main.getSetList().stream()
-                                                        .map(s -> s.getSetName())
-                                                        .collect(Collectors.toList()));
-            //setComboBox.itemsProperty().bind();
+            //setComboBox.getItems().addAll(Main.getSetList().stream()
+            //                                            .map(s -> s.getSetName())
+            //                                            .collect(Collectors.toList()));
+
+            //ObservableList<Set> setObservableList = FXCollections.observableArrayList(Main.getSetList());
+            /*
+            setComboBox.setItems(setObservableList);
+            setComboBox.setCellFactory(new Callback<ListView<Set>, ListCell<Set>>() {
+
+                @Override
+                public ListCell<Set> call(ListView<Set> param) {
+                    ListCell<Set> cell = new ListCell<Set>() {
+                        @Override
+                        public void updateItem(Set s, boolean b){
+                            super.updateItem(s, b);
+                            if (s != null) {
+                                setText(s.getSetName());
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            });
+            */
             // show UI
             setButtonBar.setVisible(true);
             editModeToggleButton.setSelected(Main.isEditMode());
         }
+    }
+
+    /**
+     * Manually update setComboBox because data binding is shit in java.
+     */
+    private void updateSetComboBox(){
+        List<String> setNames = Main.getSetList().stream().map(s -> s.getSetName()).collect(Collectors.toList());
+        ObservableList<String> setNamesObservable = FXCollections.observableArrayList(setNames);
+        setComboBox.setItems(setNamesObservable);
     }
 
     /**
@@ -180,6 +222,35 @@ public class Controller {
                     .message(e.getLocalizedMessage())
                     .showException(e);
             return false;
+        }
+    }
+
+    /**
+     * Add a Set to the database
+     * @param setName
+     * @return
+     */
+    private Set addSet(String setName){
+        try {
+            Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+            Statement statement = connection.createStatement();
+            String addQuery = "INSERT INTO Sets (set_name) VALUES ('" + setName + "')";
+            statement.execute(addQuery);
+            ResultSet resultSet = statement.getGeneratedKeys();
+            int setId = resultSet.getInt("last_insert_rowid()");
+            statement.close();
+            connection.close();
+            Set addedSet = new Set(setId, setName, false);
+
+            return addedSet;
+        } catch (Exception e){
+            Dialogs.create()
+                    .owner(Main.getStage())
+                    .title("Fail")
+                    .masthead("An exception has occurred adding the Set")
+                    .message(e.getLocalizedMessage())
+                    .showException(e);
+            return null;
         }
     }
 }

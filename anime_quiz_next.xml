@@ -58,16 +58,63 @@
     <exclude name="**/?*.clj"/>
   </patternset>
   
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/access-bridge-32.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunmscapi.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
   
   <!-- Project Libraries -->
   
   <path id="library.controlsfx-8.0.5.classpath">
-    <pathelement location="/lib/controlsfx-8.0.5.jar"/>
+    <pathelement location="${basedir}/lib/controlsfx-8.0.5.jar"/>
   </path>
   
   <path id="library.sqlite-jdbc4-3.8.2-snapshot.classpath">
-    <pathelement location="/lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
+    <pathelement location="${basedir}/lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
   </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm4-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
   
   <!-- Modules -->
   
@@ -77,6 +124,9 @@
   <dirname property="module.anime_quiz_next.basedir" file="${ant.file}"/>
   
   
+  <property name="module.jdk.home.anime_quiz_next" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.anime_quiz_next" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.anime_quiz_next" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.anime_quiz_next" value="-encoding UTF-8 -source 8 ${compiler.args}"/>
   
@@ -88,27 +138,29 @@
   </path>
   
   <path id="anime_quiz_next.module.production.classpath">
-    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
+    <path refid="${module.jdk.classpath.anime_quiz_next}"/>
     <path refid="library.controlsfx-8.0.5.classpath"/>
+    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
   </path>
   
   <path id="anime_quiz_next.runtime.production.module.classpath">
     <pathelement location="${anime_quiz_next.output.dir}"/>
-    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
     <path refid="library.controlsfx-8.0.5.classpath"/>
+    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
   </path>
   
   <path id="anime_quiz_next.module.classpath">
+    <path refid="${module.jdk.classpath.anime_quiz_next}"/>
     <pathelement location="${anime_quiz_next.output.dir}"/>
-    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
     <path refid="library.controlsfx-8.0.5.classpath"/>
+    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
   </path>
   
   <path id="anime_quiz_next.runtime.module.classpath">
     <pathelement location="${anime_quiz_next.testoutput.dir}"/>
     <pathelement location="${anime_quiz_next.output.dir}"/>
-    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
     <path refid="library.controlsfx-8.0.5.classpath"/>
+    <path refid="library.sqlite-jdbc4-3.8.2-snapshot.classpath"/>
   </path>
   
   
@@ -129,15 +181,15 @@
   
   <target name="compile.module.anime_quiz_next" depends="compile.module.anime_quiz_next.production,compile.module.anime_quiz_next.tests" description="Compile module Anime Quiz Next"/>
   
-  <target name="compile.module.anime_quiz_next.production" description="Compile module Anime Quiz Next; production classes">
+  <target name="compile.module.anime_quiz_next.production" depends="register.custom.compilers" description="Compile module Anime Quiz Next; production classes">
     <mkdir dir="${anime_quiz_next.output.dir}"/>
-    <javac destdir="${anime_quiz_next.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac2 destdir="${anime_quiz_next.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.anime_quiz_next}/javac">
       <compilerarg line="${compiler.args.anime_quiz_next}"/>
       <bootclasspath refid="anime_quiz_next.module.bootclasspath"/>
       <classpath refid="anime_quiz_next.module.production.classpath"/>
       <src refid="anime_quiz_next.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.anime_quiz_next"/>
-    </javac>
+    </javac2>
     
     <copy todir="${anime_quiz_next.output.dir}">
       <fileset dir="${module.anime_quiz_next.basedir}/src">
@@ -147,7 +199,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.anime_quiz_next.tests" depends="compile.module.anime_quiz_next.production" description="compile module Anime Quiz Next; test classes" unless="skip.tests"/>
+  <target name="compile.module.anime_quiz_next.tests" depends="register.custom.compilers,compile.module.anime_quiz_next.production" description="compile module Anime Quiz Next; test classes" unless="skip.tests"/>
   
   <target name="clean.module.anime_quiz_next" description="cleanup module">
     <delete dir="${anime_quiz_next.output.dir}"/>
@@ -164,8 +216,10 @@
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.anime_quiz_next:jar" value="${basedir}/out/artifacts/Anime_Quiz_Next_jar"/>
     <property name="artifact.output.animequiznext" value="${basedir}/out/artifacts/AnimeQuizNext"/>
     <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.Anime Quiz Next.jar" value="${artifacts.temp.dir}/Anime Quiz Next.jar"/>
     <property name="artifact.temp.output.AnimeQuizNext" value="${artifacts.temp.dir}/AnimeQuizNext.jar"/>
     <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${jdk.home.1.8}/lib/ant-javafx.jar"/>
   </target>
@@ -174,11 +228,27 @@
     <delete dir="${artifact.output.animequiznext}"/>
   </target>
   
+  <target name="artifact.anime_quiz_next:jar" depends="init.artifacts, compile.module.anime_quiz_next" description="Build &#39;Anime Quiz Next:jar&#39; artifact">
+    <property name="artifact.temp.output.anime_quiz_next:jar" value="${artifacts.temp.dir}/Anime_Quiz_Next_jar"/>
+    <mkdir dir="${artifact.temp.output.anime_quiz_next:jar}"/>
+    <jar destfile="${temp.jar.path.Anime Quiz Next.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset file="${basedir}/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${anime_quiz_next.output.dir}"/>
+      <zipfileset src="${basedir}/lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
+      <zipfileset src="${basedir}/lib/controlsfx-8.0.5.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.Anime Quiz Next.jar}" tofile="${artifact.temp.output.anime_quiz_next:jar}/Anime Quiz Next.jar"/>
+  </target>
+  
   <target name="artifact.animequiznext" depends="init.artifacts, compile.module.anime_quiz_next" description="Build &#39;AnimeQuizNext&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
     <mkdir dir="${artifact.output.animequiznext}"/>
     <copy todir="${artifact.temp.output.AnimeQuizNext}">
       <fileset dir="${anime_quiz_next.output.dir}"/>
     </copy>
+    <mkdir dir="${artifact.temp.output.AnimeQuizNext}/META-INF"/>
+    <copy file="${basedir}/META-INF/MANIFEST.MF" tofile="${artifact.temp.output.AnimeQuizNext}/META-INF/MANIFEST.MF"/>
+    <copy file="${basedir}/lib/controlsfx-8.0.5.jar" tofile="${artifact.temp.output.AnimeQuizNext}/controlsfx-8.0.5.jar"/>
+    <copy file="${basedir}/lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar" tofile="${artifact.temp.output.AnimeQuizNext}/sqlite-jdbc4-3.8.2-SNAPSHOT.jar"/>
     <fx:fileset id="all_but_AnimeQuizNext" dir="${artifact.temp.output.AnimeQuizNext}" includes="**/*.jar">
       <exclude name="AnimeQuizNext.jar"/>
     </fx:fileset>
@@ -207,7 +277,11 @@
     </delete>
   </target>
   
-  <target name="build.all.artifacts" depends="artifact.animequiznext" description="Build all artifacts">
+  <target name="build.all.artifacts" depends="artifact.anime_quiz_next:jar, artifact.animequiznext" description="Build all artifacts">
+    <mkdir dir="${artifact.output.anime_quiz_next:jar}"/>
+    <copy todir="${artifact.output.anime_quiz_next:jar}">
+      <fileset dir="${artifact.temp.output.anime_quiz_next:jar}"/>
+    </copy>
     
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>

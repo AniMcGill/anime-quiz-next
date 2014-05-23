@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: lib\controlsfx-8.0.5.jar lib\sqlite-jdbc4-3.8.2-SNAPSHOT.j
- ar
+Class-Path: sqlite-jdbc4-3.8.2-SNAPSHOT.jar controlsfx-8.0.5.jar
+Main-Class: MainWindow.Main
 

@@ -2,6 +2,8 @@ package MainWindow;
 
 import Data.Set;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,6 +24,7 @@ public class Main extends Application {
     private static String dbConnectionString;
 
     protected static ArrayList<Set> setList = new ArrayList<>();
+    //protected static ObservableList<Set> setObservableList = FXCollections.observableArrayList(setList);
 
     private static boolean editMode = true;
     @Override
