@@ -13,6 +13,7 @@ import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,8 @@ public class Controller {
      */
     @FXML
     private void setComboBox_SelectionChanged(){
-        //TODO event handler
+        //TODO event handler: set selected set as the current set (singleton?)
+        //setComboBox.getValue();
     }
 
     @FXML
@@ -76,9 +78,9 @@ public class Controller {
                 .showTextInput();
         Set addedSet = addSet(setName);
         if(addedSet != null){
-            Main.setList.add(addedSet);
-            updateSetComboBox();    // in absence of data binding
-            //TODO: update current set to the added one
+            Main.setObservableList.add(addedSet);
+            // Select the current set
+            setComboBox.setValue(addedSet);
         }
     }
 
@@ -151,46 +153,12 @@ public class Controller {
      */
     private void loadFile(File file){
         if(getSets()) {
-            // add sets to combobox for now
-            updateSetComboBox();
-            //TODO: bind instead
-            //setComboBox.getItems().addAll(Main.getSetList().stream()
-            //                                            .map(s -> s.getSetName())
-            //                                            .collect(Collectors.toList()));
+            setComboBox.setItems(Main.setObservableList);
 
-            //ObservableList<Set> setObservableList = FXCollections.observableArrayList(Main.getSetList());
-            /*
-            setComboBox.setItems(setObservableList);
-            setComboBox.setCellFactory(new Callback<ListView<Set>, ListCell<Set>>() {
-
-                @Override
-                public ListCell<Set> call(ListView<Set> param) {
-                    ListCell<Set> cell = new ListCell<Set>() {
-                        @Override
-                        public void updateItem(Set s, boolean b){
-                            super.updateItem(s, b);
-                            if (s != null) {
-                                setText(s.getSetName());
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            });
-            */
             // show UI
             setButtonBar.setVisible(true);
             editModeToggleButton.setSelected(Main.isEditMode());
         }
-    }
-
-    /**
-     * Manually update setComboBox because data binding is shit in java.
-     */
-    private void updateSetComboBox(){
-        List<String> setNames = Main.getSetList().stream().map(s -> s.getSetName()).collect(Collectors.toList());
-        ObservableList<String> setNamesObservable = FXCollections.observableArrayList(setNames);
-        setComboBox.setItems(setNamesObservable);
     }
 
     /**
@@ -205,8 +173,7 @@ public class Controller {
 
             while(setResults.next()){
                 Set newSet = new Set(setResults.getInt("set_id"), setResults.getString("set_name"), setResults.getBoolean("set_completed"));
-
-                Main.setList.add(newSet);
+                Main.setObservableList.add(newSet);
             }
             statement.close();
             connection.close();

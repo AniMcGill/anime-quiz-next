@@ -2,6 +2,8 @@ package org.msac.quiz;
 
 import Data.Set;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,8 +18,7 @@ public class Main extends Application {
 
     private static String dbConnectionString;
 
-    protected static ArrayList<Set> setList = new ArrayList<>();
-    //protected static ObservableList<Set> setObservableList = FXCollections.observableArrayList(setList);
+    protected static ObservableList<Set> setObservableList = FXCollections.observableArrayList(new ArrayList<Set>());
 
     private static boolean editMode = true;
     @Override
@@ -49,13 +50,6 @@ public class Main extends Application {
         if (file != null){
             dbConnectionString = "jdbc:sqlite:" + file.getAbsolutePath();
         }
-    }
-
-    public static ArrayList<Set> getSetList() {
-        return setList;
-    }
-    public static void setSetList(ArrayList<Set> setList) {
-        Main.setList = setList;
     }
 
     public static boolean isEditMode() {
