@@ -24,7 +24,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
-        //Parent root = FXMLLoader.load(getClass().getResource("../../../fxml/MainWindow.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
         stage.setTitle("Anime Quiz Next");
         stage.setScene(new Scene(root, 1024, 768));

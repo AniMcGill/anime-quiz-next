@@ -86,8 +86,12 @@ public class Controller {
         Set addedSet = addSet(setName);
         if(addedSet != null){
             Main.setObservableList.add(addedSet);
+            // bind the set combobox items
+            if(Main.setObservableList.size() == 1) {
+                setComboBox.setItems(Main.setObservableList);
+            }
             // Select the current set
-            setComboBox.setValue(addedSet);
+            setComboBox.setValue(Main.setObservableList.get(Main.setObservableList.indexOf(addedSet)));
         }
     }
 
@@ -167,12 +171,20 @@ public class Controller {
      * @param file the database filename
      */
     private void loadFile(File file){
+        if(!Main.setObservableList.isEmpty()){
+            Main.setObservableList.clear();
+        }
         if(getSets()) {
-            setComboBox.setItems(Main.setObservableList);
-
+            // if the set list isn't empty, we can bind it
+            if(!Main.setObservableList.isEmpty()){
+                setComboBox.setItems(Main.setObservableList);
+            }
             // show UI
             setButtonBar.setVisible(true);
             editModeToggleButton.setSelected(Main.isEditMode());
+        }
+        else{   // just in case
+            setButtonBar.setVisible(false);
         }
     }
 
