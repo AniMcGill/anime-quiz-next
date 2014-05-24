@@ -2,9 +2,8 @@ package org.msac.quiz;
 
 import Data.Set;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
@@ -13,13 +12,13 @@ import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Controller {
     @FXML private HBox setButtonBar;
     @FXML private ComboBox setComboBox;
+    @FXML private Button setRemoveButton;
+    @FXML private Button setRenameButton;
+    @FXML private ToggleButton editModeToggleButton;
 
     @FXML
     private void createGameDialog(){
@@ -65,8 +64,16 @@ public class Controller {
      */
     @FXML
     private void setComboBox_SelectionChanged(){
-        //TODO event handler: set selected set as the current set (singleton?)
-        //setComboBox.getValue();
+        if(setComboBox.getValue() != null) {
+            //TODO: set selected set as the current set (singleton?)
+            setRemoveButton.setVisible(true);
+            setRenameButton.setVisible(true);
+        }
+        else{   // just in case
+            //TODO: unselect selected set
+            setRemoveButton.setVisible(false);
+            setRenameButton.setVisible(false);
+        }
     }
 
     @FXML
@@ -84,7 +91,15 @@ public class Controller {
         }
     }
 
-    @FXML private ToggleButton editModeToggleButton;
+    @FXML
+    private void setRemoveButton_Click(){
+        //TODO
+    }
+
+    @FXML void setRenameButton_Click(){
+        //TODO
+    }
+
     @FXML
     private void editModeToggle_Toggled(){
         Main.setEditMode(editModeToggleButton.isSelected());

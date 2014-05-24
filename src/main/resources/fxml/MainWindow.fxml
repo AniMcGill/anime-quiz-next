@@ -68,12 +68,12 @@
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="setRemoveButton" mnemonicParsing="false" text="-" visible="false">
+                  <Button fx:id="setRemoveButton" mnemonicParsing="false" onAction="#setRemoveButton_Click" text="-" visible="false">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="setRenameButton" mnemonicParsing="false" text="Rename" visible="false">
+                  <Button fx:id="setRenameButton" mnemonicParsing="false" onAction="#setRenameButton_Click" text="Rename" visible="false">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
