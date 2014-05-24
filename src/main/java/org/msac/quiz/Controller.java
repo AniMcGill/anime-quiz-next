@@ -1,4 +1,4 @@
-package MainWindow;
+package org.msac.quiz;
 
 import Data.Set;
 import javafx.application.Platform;
@@ -6,12 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;

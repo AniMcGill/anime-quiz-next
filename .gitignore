@@ -12,5 +12,6 @@
 hs_err_pid*
 
 out/
+target/
 .idea
 *.bat

@@ -13,7 +13,7 @@
       prefWidth="600.0"
       xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="MainWindow.Controller">
+      fx:controller="org.msac.quiz.Controller">
    <children>
       <MenuBar fx:id="menuBar">
         <menus>
