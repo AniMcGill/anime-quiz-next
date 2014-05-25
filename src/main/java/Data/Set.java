@@ -1,5 +1,8 @@
 package Data;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +13,12 @@ public class Set {
     private int setId;
     private String setName;
     private boolean setCompleted;
-    private ArrayList<Question> questionList = new ArrayList<Question>();
-    private ArrayList<Screenshot> screenshotList = new ArrayList<Screenshot>();
-    private ArrayList<Music> musicList = new ArrayList<Music>();
+    protected ObservableList<Question> questionList = FXCollections.observableArrayList(new ArrayList<Question>());
+    protected ObservableList<Screenshot> screenshotList = FXCollections.observableArrayList(new ArrayList<Screenshot>());
+    protected ObservableList<Music> musicList = FXCollections.observableArrayList(new ArrayList<Music>());
+    //private ArrayList<Question> questionList = new ArrayList<Question>();
+    //private ArrayList<Screenshot> screenshotList = new ArrayList<Screenshot>();
+    //private ArrayList<Music> musicList = new ArrayList<Music>();
 
     public Set(int setId, String setName, boolean setCompleted) {
         this.setId = setId;
@@ -42,30 +48,6 @@ public class Set {
 
     public void setSetCompleted(boolean setCompleted) {
         this.setCompleted = setCompleted;
-    }
-
-    public ArrayList<Question> getQuestionList() {
-        return questionList;
-    }
-
-    public void setQuestionList(ArrayList<Question> questionList) {
-        this.questionList = questionList;
-    }
-
-    public ArrayList<Screenshot> getScreenshotList() {
-        return screenshotList;
-    }
-
-    public void setScreenshotList(ArrayList<Screenshot> screenshotList) {
-        this.screenshotList = screenshotList;
-    }
-
-    public ArrayList<Music> getMusicList() {
-        return musicList;
-    }
-
-    public void setMusicList(ArrayList<Music> musicList) {
-        this.musicList = musicList;
     }
 
     @Override

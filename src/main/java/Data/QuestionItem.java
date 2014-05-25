@@ -73,4 +73,9 @@ public abstract class QuestionItem {
     public void setQuestionCategory(QuestionType questionCategory) {
         this.questionCategory = questionCategory;
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(questionPoints);
+    }
 }

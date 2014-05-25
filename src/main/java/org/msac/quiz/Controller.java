@@ -16,7 +16,6 @@ import java.sql.*;
 public class Controller {
     @FXML private HBox setButtonBar;
     @FXML private ComboBox setComboBox;
-    @FXML private Button setRemoveButton;
     @FXML private Button setRenameButton;
     @FXML private ToggleButton editModeToggleButton;
 
@@ -64,16 +63,7 @@ public class Controller {
      */
     @FXML
     private void setComboBox_SelectionChanged(){
-        if(setComboBox.getValue() != null) {
-            //TODO: set selected set as the current set (singleton?)
-            setRemoveButton.setVisible(true);
-            setRenameButton.setVisible(true);
-        }
-        else{   // just in case
-            //TODO: unselect selected set
-            setRemoveButton.setVisible(false);
-            setRenameButton.setVisible(false);
-        }
+        setRenameButton.setVisible(setComboBox.getValue() != null);
     }
 
     @FXML
@@ -95,13 +85,19 @@ public class Controller {
         }
     }
 
-    @FXML
-    private void setRemoveButton_Click(){
-        //TODO
-    }
 
     @FXML void setRenameButton_Click(){
-        //TODO
+        String newSetName = Dialogs.create()
+                .owner(Main.getStage())
+                .title("Rename Set")
+                .message("Enter new Set name")
+                .showTextInput();
+        if(renameSet(((Set) setComboBox.getValue()).getSetId(), newSetName)) {
+            int setIndex = Main.setObservableList.indexOf(setComboBox.getValue());
+            Main.setObservableList.get(setIndex).setSetName(newSetName);
+            setComboBox.getSelectionModel().clearSelection();
+            setComboBox.getSelectionModel().select(setIndex);
+        }
     }
 
     @FXML
@@ -242,6 +238,31 @@ public class Controller {
                     .message(e.getLocalizedMessage())
                     .showException(e);
             return null;
+        }
+    }
+
+    /**
+     * Rename a Set
+     * @param setId the Set ID
+     * @param newSetName the new Set name
+     * @return true if the operation was successful; false otherwise
+     */
+    private boolean renameSet(int setId, String newSetName){
+        try{
+            Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+            Statement statement = connection.createStatement();
+            String updateQuery = "UPDATE Sets SET set_name = '" + newSetName + "' WHERE set_id = " + setId;
+            statement.execute(updateQuery);
+            ResultSet resultSet = statement.getGeneratedKeys();
+            return resultSet.next();
+        } catch (Exception e){
+            Dialogs.create()
+                    .owner(Main.getStage())
+                    .title("Fail")
+                    .masthead("An exception has occurred renaming the Set")
+                    .message(e.getLocalizedMessage())
+                    .showException(e);
+            return false;
         }
     }
 }
