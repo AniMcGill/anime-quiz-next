@@ -13,9 +13,9 @@ public class Set {
     private int setId;
     private String setName;
     private boolean setCompleted;
-    protected ObservableList<Question> questionList = FXCollections.observableArrayList(new ArrayList<Question>());
-    protected ObservableList<Screenshot> screenshotList = FXCollections.observableArrayList(new ArrayList<Screenshot>());
-    protected ObservableList<Music> musicList = FXCollections.observableArrayList(new ArrayList<Music>());
+    public ObservableList<Question> questionList = FXCollections.observableArrayList(new ArrayList<Question>());
+    public ObservableList<Screenshot> screenshotList = FXCollections.observableArrayList(new ArrayList<Screenshot>());
+    public ObservableList<Music> musicList = FXCollections.observableArrayList(new ArrayList<Music>());
     //private ArrayList<Question> questionList = new ArrayList<Question>();
     //private ArrayList<Screenshot> screenshotList = new ArrayList<Screenshot>();
     //private ArrayList<Music> musicList = new ArrayList<Music>();

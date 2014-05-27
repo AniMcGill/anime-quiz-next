@@ -15,7 +15,7 @@ import java.sql.*;
 
 public class Controller {
     @FXML private HBox setButtonBar;
-    @FXML private ComboBox setComboBox;
+    @FXML private ComboBox<Set> setComboBox;
     @FXML private Button setRenameButton;
     @FXML private ToggleButton editModeToggleButton;
 
@@ -26,6 +26,7 @@ public class Controller {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Anime Quiz", "*.s3db")
         );
+        fileChooser.setInitialDirectory(new File("."));
         File file = fileChooser.showSaveDialog(Main.getStage());
         if(file != null) {
             // delete existing file
@@ -44,6 +45,7 @@ public class Controller {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Anime Quiz", "*.s3db")
         );
+        fileChooser.setInitialDirectory(new File("."));
         File file = fileChooser.showOpenDialog(Main.getStage());
         if(file != null){
             Main.setFile(file);
@@ -64,6 +66,7 @@ public class Controller {
     @FXML
     private void setComboBox_SelectionChanged(){
         setRenameButton.setVisible(setComboBox.getValue() != null);
+        //TODO: find a way to pass info to PlayerWindow or PlayerController
     }
 
     @FXML

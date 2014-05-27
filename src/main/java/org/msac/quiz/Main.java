@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class Main extends Application {
     private static Stage stage;
+    protected Stage playerStage;
     private static File file;
 
     private static String dbConnectionString;
@@ -33,7 +34,7 @@ public class Main extends Application {
         stage.setScene(new Scene(root, 1024, 768));
 
         // Set up Player Window
-        final Stage playerStage = new Stage(StageStyle.UTILITY);
+        playerStage = new Stage(StageStyle.UTILITY);
         Parent playerRoot = FXMLLoader.load(getClass().getResource("/fxml/PlayerWindow.fxml"));
         playerStage.setTitle("Anime Quiz Next - Player Window");
         playerStage.setScene(new Scene(playerRoot, 1024,768));
@@ -75,5 +76,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }

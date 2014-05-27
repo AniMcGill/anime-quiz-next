@@ -7,6 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.GridView?>
 <SplitPane dividerPositions="0.25, 0.5, 0.75" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.msac.quiz.PlayerController">
  <items>
     <VBox prefHeight="200.0" prefWidth="100.0">
@@ -16,7 +17,9 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="questionFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP" />
+          <FlowPane fx:id="questionFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP">
+              <GridView fx:id="questionGridView" />
+          </FlowPane>
        </children>
     </VBox>
     <VBox prefHeight="200.0" prefWidth="100.0">
@@ -26,7 +29,9 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="screenshotFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP" />
+          <FlowPane fx:id="screenshotFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP">
+              <GridView fx:id="screenshotGridView" />
+          </FlowPane>
        </children>
     </VBox>
     <VBox prefHeight="200.0" prefWidth="100.0">
@@ -36,7 +41,9 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="musicFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP" />
+          <FlowPane fx:id="musicFlowPane" prefHeight="358.0" prefWidth="100.0" rowValignment="TOP">
+              <GridView fx:id="musicGridView" />
+          </FlowPane>
        </children>
     </VBox>
     <VBox prefHeight="200.0" prefWidth="100.0">
