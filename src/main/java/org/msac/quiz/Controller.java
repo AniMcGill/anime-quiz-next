@@ -67,6 +67,10 @@ public class Controller {
     private void setComboBox_SelectionChanged(){
         setRenameButton.setVisible(setComboBox.getValue() != null);
         //TODO: find a way to pass info to PlayerWindow or PlayerController
+        int setIndex = Main.setObservableList.indexOf(setComboBox.getValue());
+        if (setIndex >= 0) {
+            Main.showPlayerWindow(setIndex);
+        }
     }
 
     @FXML
