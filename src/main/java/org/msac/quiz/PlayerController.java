@@ -86,9 +86,10 @@ public class PlayerController {
     private void openEditorWindow(QuestionType questionType) {
         try {
             Stage editorStage = new Stage(StageStyle.UTILITY);
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/EditorWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditorWindow.fxml"));
             editorStage.setTitle(questionType.toString() + " Editor");
-            editorStage.setScene(new Scene(root, 480, 240));
+            editorStage.setScene(new Scene(loader.load(), 480, 240));
+            loader.<EditorController>getController().init(questionType);
 
             editorStage.showAndWait();
         } catch (IOException e) {

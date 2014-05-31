@@ -1,60 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.input.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import org.controlsfx.control.GridView?>
-<SplitPane dividerPositions="0.3, 0.6, 0.9" maxHeight="-Infinity" maxWidth="-Infinity"
+<SplitPane dividerPositions="0.27, 0.54, 0.81" maxHeight="-Infinity" maxWidth="-Infinity"
            minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0"
            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.msac.quiz.PlayerController">
  <items>
-    <VBox prefHeight="200.0" prefWidth="300.0">
+    <VBox prefHeight="200.0" prefWidth="275.0">
        <children>
-          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="300.0" text="Question">
+          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="275.0" text="Question">
              <font>
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="questionFlowPane" prefHeight="358.0" prefWidth="300.0" rowValignment="TOP">
+          <FlowPane fx:id="questionFlowPane" prefHeight="358.0" prefWidth="275.0" rowValignment="TOP">
               <GridView fx:id="questionGridView" cellHeight="60" cellWidth="60" />
               <Button fx:id="addQuestionButton" onAction="#addQuestionButton_Click" visible="false" text="+" />
           </FlowPane>
        </children>
     </VBox>
-    <VBox prefHeight="200.0" prefWidth="300.0">
+    <VBox prefHeight="200.0" prefWidth="275.0">
        <children>
-          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="300.0" text="Screenshot">
+          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="275.0" text="Screenshot">
              <font>
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="screenshotFlowPane" prefHeight="358.0" prefWidth="300.0" rowValignment="TOP">
+          <FlowPane fx:id="screenshotFlowPane" prefHeight="358.0" prefWidth="275.0" rowValignment="TOP">
               <GridView fx:id="screenshotGridView" cellHeight="60" cellWidth="60" />
               <Button fx:id="addScreenshotButton" onAction="#addScreenshotButton_Click" visible="false" text="+" />
           </FlowPane>
        </children>
     </VBox>
-    <VBox prefHeight="200.0" prefWidth="300.0">
+    <VBox prefHeight="200.0" prefWidth="275.0">
        <children>
-          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="300.0" text="Music">
+          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="275.0" text="Music">
              <font>
                 <Font size="24.0" />
              </font>
           </Label>
-          <FlowPane fx:id="musicFlowPane" prefHeight="358.0" prefWidth="300.0" rowValignment="TOP">
+          <FlowPane fx:id="musicFlowPane" prefHeight="358.0" prefWidth="275.0" rowValignment="TOP">
               <GridView fx:id="musicGridView" cellHeight="60" cellWidth="60" />
               <Button fx:id="addMusicButton" onAction="#addMusicButton_Click" visible="false" text="+" />
           </FlowPane>
        </children>
     </VBox>
-    <VBox prefHeight="200.0" prefWidth="124.0">
+    <VBox prefHeight="200.0" prefWidth="199.0">
        <children>
-          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="124.0" text="Leaderboard">
+          <Label alignment="TOP_CENTER" prefHeight="36.0" prefWidth="199.0" text="Leaderboard">
              <font>
                 <Font size="18.0" />
              </font>
