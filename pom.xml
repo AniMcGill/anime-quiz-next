@@ -57,6 +57,8 @@
                             <mainClass>org.msac.quiz.Main</mainClass>
                         </manifest>
                     </archive>
+                    <finalName>AnimeQuizNext-${maven.build.timestamp}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
