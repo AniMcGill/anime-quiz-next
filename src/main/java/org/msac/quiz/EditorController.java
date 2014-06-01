@@ -1,7 +1,8 @@
 package org.msac.quiz;
 
+import javafx.scene.control.CheckBox;
 import org.msac.controls.MediaControl;
-import org.msac.data.QuestionType;
+import org.msac.data.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.VPos;
@@ -25,8 +26,8 @@ import org.controlsfx.dialog.Dialogs;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.sql.*;
 
 /**
  * Created by Natsumi on 2014-05-28.
@@ -38,14 +39,116 @@ public class EditorController {
     @FXML private TextField answerTextField;
     @FXML private TextField pointsTextField;
     @FXML private TextField timingTextField;
+    @FXML private CheckBox answeredCheckBox;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
     @FXML private Button deleteButton;
 
+    private int setId;
+    private Question currentQuestion = null;
+    private QuestionType questionType;
+    private Button filePickerButton;
+    private Node previewNode;
+
     @FXML
     private void saveButton_Click() {
-        //TODO
+        try {
+            Question question = setQuestionItem();
+            if (question != null && currentQuestion != null && question.equals(currentQuestion)) {
+                switch(questionType) {
+                    case QUESTION:
+                        Main.setObservableList.get(setId).questionList.remove(currentQuestion);
+                        break;
+                    case SCREENSHOT:
+                        Main.setObservableList.get(setId).screenshotList.remove(currentQuestion);
+                        break;
+                    case MUSIC:
+                        Main.setObservableList.get(setId).musicList.remove(currentQuestion);
+                        break;
+                }
+            }
+            if(question != null) {
+                switch(questionType) {
+                    case QUESTION:
+                        Main.setObservableList.get(setId).questionList.add(question);
+                        break;
+                    case SCREENSHOT:
+                        Main.setObservableList.get(setId).screenshotList.add(question);
+                        break;
+                    case MUSIC:
+                        Main.setObservableList.get(setId).musicList.add(question);
+                        break;
+                }
+            }
+            this.close();
+        } catch (IOException e) {
+            Dialogs.create()
+                    .owner(saveButton.getScene().getWindow())
+                    .title("Fail")
+                    .masthead("An exception has occurred saving the question")
+                    .message(e.getLocalizedMessage())
+                    .showException(e);
+        }
     }
+
+    private Question setQuestionItem() throws IOException {
+        String questionDataString = questionDataInput.toString();
+        String questionAnswer = answerTextField.getText();
+        int questionPoints = Integer.parseInt(pointsTextField.getText());
+        int questionTiming = Integer.parseInt(timingTextField.getText());
+        boolean questionAnswered = answeredCheckBox.isSelected();
+
+        byte[] questionData;
+        if(questionType == QuestionType.QUESTION) {
+            questionData = questionDataString.getBytes("UTF-8");
+        }
+        else {
+            //http://www.programcreek.com/2009/02/java-convert-a-file-to-byte-array-then-convert-byte-array-to-a-file/
+            FileInputStream fileInputStream = new FileInputStream(questionDataString);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            for (int read = 0; (read = fileInputStream.read(buffer)) != -1 ; ) {
+                byteArrayOutputStream.write(buffer, 0, read);
+            }
+
+            questionData = byteArrayOutputStream.toByteArray();
+        }
+        Question question = saveQuestionItem(questionData, questionAnswer, questionPoints, questionTiming, questionAnswered);
+        return question;
+    }
+
+    private Question saveQuestionItem(byte[] questionData, String questionAnswer, int questionPoints, int questionTiming, boolean questionAnswered) {
+        try {
+            Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+            String insertQuery = "INSERT OR REPLACE INTO Questions (question_data, question_answer, question_timing, " +
+                    "question_points, question_answered, question_cat, set_id) VALUES (?,?,?,?,?,?,?);";
+            PreparedStatement statement = connection.prepareStatement(insertQuery);
+            statement.setBytes(1, questionData);
+            statement.setString(2, questionAnswer);
+            statement.setInt(3, questionTiming);
+            statement.setInt(4, questionPoints);
+            statement.setBoolean(5, questionAnswered);
+            statement.setInt(6, questionType.value());
+            statement.setInt(7, setId);
+
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            int questionId = resultSet.getInt("last_insert_rowid()");
+            statement.close();
+            connection.close();
+
+            return new Question(questionId, questionData, questionAnswer, questionPoints, questionAnswered, questionTiming, questionType);
+        } catch (SQLException e) {
+            Dialogs.create()
+                    .owner(saveButton.getScene().getWindow())
+                    .title("Fail")
+                    .masthead("An exception has occurred saving the question to the database")
+                    .message(e.getLocalizedMessage())
+                    .showException(e);
+        }
+        return null;
+    }
+
     @FXML
     private void cancelButton_Click() {
         Action response = Dialogs.create()
@@ -66,18 +169,54 @@ public class EditorController {
                 .showConfirm();
         if(response == Dialog.Actions.YES) {
             //TODO delete item and update
+            /*
+            try{
+                Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
+                String query = "DELETE FROM Questions WHERE question_id = " + currentQuestion.getQuestionId() + ";";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.executeUpdate();
+
+                statement.close();
+                connection.close();
+
+                switch (questionType) {
+                    case QUESTION:
+                        Main.setObservableList.get(setId).questionList.remove(currentQuestion);
+                        break;
+                    case SCREENSHOT:
+                        Main.setObservableList.get(setId).screenshotList.remove(currentQuestion);
+                        break;
+                    case MUSIC:
+                        Main.setObservableList.get(setId).musicList.remove(currentQuestion);
+                        break;
+                }
+            } catch (SQLException e) {
+                Dialogs.create()
+                        .owner(saveButton.getScene().getWindow())
+                        .title("Fail")
+                        .masthead("An exception has occurred deleting the question")
+                        .message(e.getLocalizedMessage())
+                        .showException(e);
+            } */
+
             close();
         }
     }
 
-    private QuestionType questionType;
-    private Button filePickerButton;
-    private Node previewNode;
-
-    public void init(QuestionType questionType) {
+    public void init(QuestionType questionType, int setId) {
+        this.setId = setId;
         this.questionType = questionType;
         addIntegerRestrict();
         loadQuestionDataControl();
+    }
+
+    public void init(QuestionType questionType, int setId, Question currentQuestion) {
+        this.setId = setId;
+        this.questionType = questionType;
+        this.currentQuestion = currentQuestion;
+        addIntegerRestrict();
+        loadQuestionDataControl();
+        deleteButton.setVisible(true);
     }
 
     private void loadQuestionDataControl() {
@@ -171,7 +310,13 @@ public class EditorController {
         });
     }
 
-    private void close() {
+    /**
+     * Stop the music preview if necessary and close the stage
+     */
+    protected void close() {
+        if (questionType == QuestionType.MUSIC) {
+            ((MediaControl)previewNode).stopMusic();
+        }
         ((Stage) cancelButton.getScene().getWindow()).close();
     }
 }

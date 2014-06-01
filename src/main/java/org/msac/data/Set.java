@@ -13,8 +13,8 @@ public class Set {
     private String setName;
     private boolean setCompleted;
     public ObservableList<Question> questionList = FXCollections.observableArrayList(new ArrayList<>());
-    public ObservableList<Screenshot> screenshotList = FXCollections.observableArrayList(new ArrayList<>());
-    public ObservableList<Music> musicList = FXCollections.observableArrayList(new ArrayList<>());
+    public ObservableList<Question> screenshotList = FXCollections.observableArrayList(new ArrayList<>());
+    public ObservableList<Question> musicList = FXCollections.observableArrayList(new ArrayList<>());
 
     public Set(int setId, String setName, boolean setCompleted) {
         this.setId = setId;

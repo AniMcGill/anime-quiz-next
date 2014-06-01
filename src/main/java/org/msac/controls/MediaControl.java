@@ -17,7 +17,6 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
  */
 public class MediaControl extends VBox {
     private MediaPlayer mediaPlayer;
-    private final boolean repeat = false;
     private boolean stopRequested = false;
     private boolean atEndOfMedia = false;
     private Duration duration;
@@ -31,10 +30,6 @@ public class MediaControl extends VBox {
         addTimeSlider();
         addPlayButton();
 
-    }
-
-    public MediaPlayer getMediaPlayer(){
-        return mediaPlayer;
     }
 
     private void addTimeSlider(){
@@ -110,5 +105,9 @@ public class MediaControl extends VBox {
                 }
             });
         }
+    }
+
+    public void stopMusic(){
+        mediaPlayer.stop();
     }
 }
