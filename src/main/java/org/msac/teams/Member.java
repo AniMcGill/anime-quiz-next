@@ -1,4 +1,4 @@
-package Teams;
+package org.msac.teams;
 
 /**
  * Created by Natsumi on 2014-05-19.

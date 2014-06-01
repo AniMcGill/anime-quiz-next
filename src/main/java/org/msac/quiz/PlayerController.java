@@ -1,19 +1,18 @@
 package org.msac.quiz;
 
-import Data.*;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
-import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
 import org.controlsfx.dialog.Dialogs;
+import org.msac.data.Music;
+import org.msac.data.Question;
+import org.msac.data.QuestionType;
+import org.msac.data.Screenshot;
 
 import java.io.IOException;
 

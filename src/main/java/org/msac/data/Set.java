@@ -1,10 +1,9 @@
-package Data;
+package org.msac.data;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Natsumi on 2014-05-20.

@@ -1,4 +1,4 @@
-package Teams;
+package org.msac.teams;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package Data;
+package org.msac.data;
 
 /**
  * Created by Natsumi on 2014-05-21.

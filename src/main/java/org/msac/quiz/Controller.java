@@ -1,6 +1,6 @@
 package org.msac.quiz;
 
-import Data.Set;
+import org.msac.data.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

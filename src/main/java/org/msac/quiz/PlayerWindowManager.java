@@ -1,6 +1,6 @@
 package org.msac.quiz;
 
-import Data.QuestionType;
+import org.msac.data.QuestionType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import org.controlsfx.dialog.Dialogs;
