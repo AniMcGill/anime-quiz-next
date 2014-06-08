@@ -27,24 +27,21 @@ public class PlayerController {
     @FXML protected Button addScreenshotButton;
     @FXML protected Button addMusicButton;
 
-    private int setIndex;
+    protected static int setIndex;
 
     @FXML
     private void addQuestionButton_Click(){
         openEditorWindow(QuestionType.QUESTION);
-        loadQuestions();
     }
 
     @FXML
     private void addScreenshotButton_Click(){
         openEditorWindow(QuestionType.SCREENSHOT);
-        loadScreenshots();
     }
 
     @FXML
     private void addMusicButton_Click(){
         openEditorWindow(QuestionType.MUSIC);
-        loadMusics();
     }
 
     public void init(int setIndex) {
@@ -112,21 +109,21 @@ public class PlayerController {
     private void loadQuestions() {
         if(!Main.setObservableList.get(setIndex).questionList.isEmpty()){
             questionGridView.setItems(Main.setObservableList.get(setIndex).questionList);
-            questionGridView.setCellFactory(new QuestionGridCellFactory<>());
+            questionGridView.setCellFactory(new QuestionGridCellFactory<>(setIndex));
         }
     }
 
     private void loadScreenshots() {
         if(!Main.setObservableList.get(setIndex).screenshotList.isEmpty()) {
             screenshotGridView.setItems(Main.setObservableList.get(setIndex).screenshotList);
-            screenshotGridView.setCellFactory(new QuestionGridCellFactory<>());
+            screenshotGridView.setCellFactory(new QuestionGridCellFactory<>(setIndex));
         }
     }
 
     private void loadMusics() {
         if(!Main.setObservableList.get(setIndex).musicList.isEmpty()){
             musicGridView.setItems(Main.setObservableList.get(setIndex).musicList);
-            musicGridView.setCellFactory(new QuestionGridCellFactory<>());
+            musicGridView.setCellFactory(new QuestionGridCellFactory<>(setIndex));
         }
     }
 
@@ -136,12 +133,14 @@ public class PlayerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditorWindow.fxml"));
             editorStage.setTitle(questionType.toString() + " Editor");
             editorStage.setScene(new Scene(loader.load(), 480, 240));
-            loader.<EditorController>getController().init(questionType, Main.setObservableList.get(setIndex).getSetId());
+            loader.<EditorController>getController().init(questionType, setIndex);
 
-            editorStage.setOnHiding(event -> loader.<EditorController>getController().close());
-            editorStage.setOnCloseRequest(event -> loadSet());
+            editorStage.setOnHiding(event -> {
+                loader.<EditorController>getController().close();
+                loadSet();
+            });
 
-            editorStage.showAndWait();
+            editorStage.show();
         } catch (IOException e) {
             Dialogs.create()
                     .owner(Main.getStage())

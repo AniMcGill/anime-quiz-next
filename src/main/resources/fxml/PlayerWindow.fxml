@@ -17,7 +17,7 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <GridView fx:id="questionGridView" prefHeight="358.0" prefWidth="275.0" cellHeight="60" cellWidth="60"  />
+          <GridView fx:id="questionGridView" prefHeight="700.0" prefWidth="275.0" cellHeight="60" cellWidth="60"  />
           <Button fx:id="addQuestionButton" onAction="#addQuestionButton_Click" visible="false" text="+" />
        </children>
     </VBox>
@@ -28,7 +28,7 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <GridView fx:id="screenshotGridView" cellHeight="60" cellWidth="60" />
+          <GridView fx:id="screenshotGridView" prefHeight="700.0" prefWidth="275.0" cellHeight="60" cellWidth="60" />
            <Button fx:id="addScreenshotButton" onAction="#addScreenshotButton_Click" visible="false" text="+" />
        </children>
     </VBox>
@@ -39,7 +39,7 @@
                 <Font size="24.0" />
              </font>
           </Label>
-          <GridView fx:id="musicGridView" cellHeight="60" cellWidth="60" />
+          <GridView fx:id="musicGridView" prefHeight="700.0" prefWidth="275.0" cellHeight="60" cellWidth="60" />
            <Button fx:id="addMusicButton" onAction="#addMusicButton_Click" visible="false" text="+" />
        </children>
     </VBox>

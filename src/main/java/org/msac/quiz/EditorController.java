@@ -44,6 +44,7 @@ public class EditorController {
     @FXML private Button cancelButton;
     @FXML private Button deleteButton;
 
+    private int setIndex;
     private int setId;
     private Question currentQuestion = null;
     private QuestionType questionType;
@@ -57,26 +58,26 @@ public class EditorController {
             if (question != null && currentQuestion != null && question.equals(currentQuestion)) {
                 switch(questionType) {
                     case QUESTION:
-                        Main.setObservableList.get(setId).questionList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).questionList.remove(currentQuestion);
                         break;
                     case SCREENSHOT:
-                        Main.setObservableList.get(setId).screenshotList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).screenshotList.remove(currentQuestion);
                         break;
                     case MUSIC:
-                        Main.setObservableList.get(setId).musicList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).musicList.remove(currentQuestion);
                         break;
                 }
             }
             if(question != null) {
                 switch(questionType) {
                     case QUESTION:
-                        Main.setObservableList.get(setId).questionList.add(question);
+                        Main.setObservableList.get(setIndex).questionList.add(question);
                         break;
                     case SCREENSHOT:
-                        Main.setObservableList.get(setId).screenshotList.add(question);
+                        Main.setObservableList.get(setIndex).screenshotList.add(question);
                         break;
                     case MUSIC:
-                        Main.setObservableList.get(setId).musicList.add(question);
+                        Main.setObservableList.get(setIndex).musicList.add(question);
                         break;
                 }
             }
@@ -92,7 +93,7 @@ public class EditorController {
     }
 
     private Question setQuestionItem() throws IOException {
-        String questionDataString = questionDataInput.toString();
+        String questionDataString = questionDataInput.getText();
         String questionAnswer = answerTextField.getText();
         int questionPoints = Integer.parseInt(pointsTextField.getText());
         int questionTiming = Integer.parseInt(timingTextField.getText());
@@ -168,8 +169,6 @@ public class EditorController {
                 .message("Are you sure you want to delete this item?")
                 .showConfirm();
         if(response == Dialog.Actions.YES) {
-            //TODO delete item and update
-            /*
             try{
                 Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
                 String query = "DELETE FROM Questions WHERE question_id = " + currentQuestion.getQuestionId() + ";";
@@ -181,13 +180,13 @@ public class EditorController {
 
                 switch (questionType) {
                     case QUESTION:
-                        Main.setObservableList.get(setId).questionList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).questionList.remove(currentQuestion);
                         break;
                     case SCREENSHOT:
-                        Main.setObservableList.get(setId).screenshotList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).screenshotList.remove(currentQuestion);
                         break;
                     case MUSIC:
-                        Main.setObservableList.get(setId).musicList.remove(currentQuestion);
+                        Main.setObservableList.get(setIndex).musicList.remove(currentQuestion);
                         break;
                 }
             } catch (SQLException e) {
@@ -197,26 +196,51 @@ public class EditorController {
                         .masthead("An exception has occurred deleting the question")
                         .message(e.getLocalizedMessage())
                         .showException(e);
-            } */
+            }
 
             close();
         }
     }
 
-    public void init(QuestionType questionType, int setId) {
-        this.setId = setId;
+    public void init(QuestionType questionType, int setIndex) {
+        this.setIndex = setIndex;
+        this.setId = Main.setObservableList.get(setIndex).getSetId();
         this.questionType = questionType;
         addIntegerRestrict();
         loadQuestionDataControl();
     }
 
-    public void init(QuestionType questionType, int setId, Question currentQuestion) {
-        this.setId = setId;
-        this.questionType = questionType;
+    public void init(Question currentQuestion, int setIndex) {
+        this.setIndex = setIndex;
+        this.setId = Main.setObservableList.get(setIndex).getSetId();
+        this.questionType = currentQuestion.getQuestionCategory();
         this.currentQuestion = currentQuestion;
+
+        loadQuestion(currentQuestion);
+
         addIntegerRestrict();
         loadQuestionDataControl();
         deleteButton.setVisible(true);
+    }
+
+    private void loadQuestion(Question currentQuestion) {
+        if(questionType == QuestionType.QUESTION) {
+            try {
+                questionDataInput.setText(new String(currentQuestion.getQuestionData(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                Dialogs.create()
+                        .owner(saveButton.getScene().getWindow())
+                        .title("Fail")
+                        .masthead("An exception has occurred loading the question")
+                        .message(e.getLocalizedMessage())
+                        .showException(e);
+            }
+        }
+        // TODO: music and screenshot previews from stream
+        answerTextField.setText(currentQuestion.getQuestionAnswer());
+        pointsTextField.setText(Integer.toString(currentQuestion.getQuestionPoints()));
+        timingTextField.setText(Integer.toString(currentQuestion.getQuestionTiming()));
+        answeredCheckBox.setSelected(currentQuestion.isQuestionAnswered());
     }
 
     private void loadQuestionDataControl() {
