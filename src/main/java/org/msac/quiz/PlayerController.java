@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.GridView;
@@ -13,16 +12,12 @@ import org.msac.data.*;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Created by Natsumi on 2014-05-24.
  */
 public class PlayerController {
-    @FXML protected FlowPane questionFlowPane;
-    @FXML protected FlowPane screenshotFlowPane;
-    @FXML protected FlowPane musicFlowPane;
 
     @FXML protected GridView<Question> questionGridView;
     @FXML protected GridView<Question> screenshotGridView;
@@ -57,7 +52,9 @@ public class PlayerController {
         loadSet();
     }
     public void loadSet() {
-        loadFromDatabase();
+        if(isSetInitialLoad()) {
+            loadFromDatabase();
+        }
 
         loadQuestions();
         loadScreenshots();
@@ -66,12 +63,19 @@ public class PlayerController {
         updateAddButtonVisibility();
     }
 
+    private boolean isSetInitialLoad() {
+        return (Main.setObservableList.get(setIndex).questionList.isEmpty()
+                && Main.setObservableList.get(setIndex).screenshotList.isEmpty()
+                && Main.setObservableList.get(setIndex).musicList.isEmpty());
+    }
+
     private void loadFromDatabase() {
         try {
             Connection connection = DriverManager.getConnection(Main.getDbConnectionString());
             Statement statement = connection.createStatement();
             String query = "SELECT * FROM Questions WHERE set_id = " + Main.setObservableList.get(setIndex).getSetId();
             ResultSet resultSet = statement.executeQuery(query);
+
             while(resultSet.next()) {
                 QuestionType questionType = QuestionType.values()[resultSet.getInt("question_cat")];
                 Question question = new Question(resultSet.getInt("question_id"),
@@ -93,9 +97,11 @@ public class PlayerController {
                         break;
                 }
             }
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
             Dialogs.create()
-                    .owner(questionFlowPane.getScene().getWindow())
+                    .owner(questionGridView.getScene().getWindow())
                     .title("Fail")
                     .masthead("An exception has occurred loading the database")
                     .message(e.getLocalizedMessage())
@@ -106,20 +112,21 @@ public class PlayerController {
     private void loadQuestions() {
         if(!Main.setObservableList.get(setIndex).questionList.isEmpty()){
             questionGridView.setItems(Main.setObservableList.get(setIndex).questionList);
-            //questionGridView.setCellFactory(param -> new GridCell());
-            //Logger.getAnonymousLogger().log(Level.INFO, "Bounded the question list to the grid view");
+            questionGridView.setCellFactory(new QuestionGridCellFactory<>());
         }
     }
 
     private void loadScreenshots() {
         if(!Main.setObservableList.get(setIndex).screenshotList.isEmpty()) {
             screenshotGridView.setItems(Main.setObservableList.get(setIndex).screenshotList);
+            screenshotGridView.setCellFactory(new QuestionGridCellFactory<>());
         }
     }
 
     private void loadMusics() {
         if(!Main.setObservableList.get(setIndex).musicList.isEmpty()){
             musicGridView.setItems(Main.setObservableList.get(setIndex).musicList);
+            musicGridView.setCellFactory(new QuestionGridCellFactory<>());
         }
     }
 
