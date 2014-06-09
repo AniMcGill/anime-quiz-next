@@ -216,27 +216,40 @@ public class EditorController {
         this.questionType = currentQuestion.getQuestionCategory();
         this.currentQuestion = currentQuestion;
 
-        loadQuestion(currentQuestion);
-
         addIntegerRestrict();
         loadQuestionDataControl();
         deleteButton.setVisible(true);
+        loadCurrentQuestion();
     }
 
-    private void loadQuestion(Question currentQuestion) {
-        if(questionType == QuestionType.QUESTION) {
-            try {
-                questionDataInput.setText(new String(currentQuestion.getQuestionData(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                Dialogs.create()
-                        .owner(saveButton.getScene().getWindow())
-                        .title("Fail")
-                        .masthead("An exception has occurred loading the question")
-                        .message(e.getLocalizedMessage())
-                        .showException(e);
+    private void loadCurrentQuestion() {
+        try{
+            switch (questionType){
+                case QUESTION:
+                    questionDataInput.setText(new String(currentQuestion.getQuestionData(), "UTF-8"));
+                    break;
+                case SCREENSHOT:
+                    /*File temporaryFile = new File("temp");
+                    writeTemporaryFile(currentQuestion.getQuestionData(), temporaryFile);
+                    loadScreenshotPreview(temporaryFile);
+                    addPreviewNode();*/
+                    loadScreenshotPreview(currentQuestion.getQuestionData());
+                    addPreviewNode();
+                    break;
+                case MUSIC:
+                    // TODO: music and screenshot previews from stream
+                    break;
             }
         }
-        // TODO: music and screenshot previews from stream
+        catch (IOException e) {
+            Dialogs.create()
+                    .owner(saveButton.getScene().getWindow())
+                    .title("Fail")
+                    .masthead("An exception has occurred loading the question")
+                    .message(e.getLocalizedMessage())
+                    .showException(e);
+        }
+
         answerTextField.setText(currentQuestion.getQuestionAnswer());
         pointsTextField.setText(Integer.toString(currentQuestion.getQuestionPoints()));
         timingTextField.setText(Integer.toString(currentQuestion.getQuestionTiming()));
@@ -296,12 +309,13 @@ public class EditorController {
     }
 
     private void addPreviewNode() {
+        mainGrid.getChildren().remove(previewNode);
         mainGrid.add(previewNode, 4, 0);
         GridPane.setColumnSpan(previewNode, 2);
         GridPane.setRowSpan(previewNode, 5);
         GridPane.setValignment(previewNode, VPos.TOP);
-        GridPane.setHgrow(previewNode, Priority.SOMETIMES);
-        GridPane.setVgrow(previewNode, Priority.SOMETIMES);
+        //GridPane.setHgrow(previewNode, Priority.SOMETIMES);
+        //GridPane.setVgrow(previewNode, Priority.SOMETIMES);
     }
 
     private void loadMusicPreview(File file) {
@@ -310,11 +324,34 @@ public class EditorController {
     }
 
     private void loadScreenshotPreview(File file) throws IOException {
-        previewNode = new ImageView();
         BufferedImage bufferedImage = ImageIO.read(file);
         WritableImage image = SwingFXUtils.toFXImage(bufferedImage, null);
+        setPreviewImage(image);
+    }
+
+    private void loadScreenshotPreview(byte[] bytes) throws IOException {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        WritableImage image = SwingFXUtils.toFXImage(bufferedImage, null);
+        setPreviewImage(image);
+    }
+
+    /*private void writeTemporaryFile(byte[] bytes, File file) throws IOException {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        ImageIO.write(bufferedImage, "jpg", file);
+    }*/
+
+    private void setPreviewImage(WritableImage image) {
+        previewNode = new ImageView();
         ((ImageView)previewNode).setImage(image);
-        mainGrid.boundsInLocalProperty().addListener((observable, oldValue, newValue) -> ((ImageView)previewNode).setFitWidth(newValue.getWidth()/3));
+        // TODO: stackoverflow exception when trying this on an existing question
+        if(currentQuestion == null) {
+            mainGrid.boundsInLocalProperty().addListener((observable, oldValue, newValue) -> ((ImageView) previewNode).setFitWidth(newValue.getWidth() / 3));
+        }
+        else {
+            ((ImageView)previewNode).setFitWidth(200);
+        }
         ((ImageView)previewNode).setPreserveRatio(true);
     }
 
